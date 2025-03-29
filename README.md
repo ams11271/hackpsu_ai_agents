@@ -1,1 +1,1 @@
-# hackpsu_ai_agents
+# Contract.ai
