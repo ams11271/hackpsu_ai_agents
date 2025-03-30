@@ -8,7 +8,7 @@ ClauseSense is an AI-powered tool that:
 - Processes legal documents (DOCX files) and extracts key clauses
 - Uses semantic search to find relevant sections based on user queries
 - Generates concise summaries of legal clauses (limited to 4 sentences for clarity)
-- Provides a user-friendly web interface for document analysis
+- Provides a user-friendly web interface for document analysis.
 
 ## Technical Details
 
