@@ -5,16 +5,26 @@ import faiss
 import numpy as np
 
 # Use your provided file path
-file_path = r'/Users/arya/Downloads/Model-VA-10-24-2024.docx'
+file_paths = [
+    r'/Users/arya/Downloads/Model-VA-10-24-2024.docx',
+    r'/Users/arya/Downloads/Model-IRA-10-24-2024.docx',
+    r'/Users/arya/Downloads/NVCA-OISP-Reps-as-of-1-3-2025.docx',
+    r'/Users/arya/Downloads/Model-SPA-10-24-2024.docx',
+    r'/Users/arya/Downloads/Model-COI-10-24-2024.docx'
+]
 
-def extract_text_from_docx(file_path):
-    """Extract text from a DOCX file."""
-    doc = Document(file_path)
+def extract_text_from_docx(file_paths):
+    """Extract text from multiple DOCX files."""
     full_text = []
-    for para in doc.paragraphs:
-        text = para.text.strip()
-        if text:
-            full_text.append(text)
+    for file_path in file_paths:
+        try:
+            doc = Document(file_path)
+            for para in doc.paragraphs:
+                text = para.text.strip()
+                if text:
+                    full_text.append(text)
+        except Exception as e:
+            print(f"Error processing {file_path}: {str(e)}")
     return "\n".join(full_text)
 
 def segment_text(text):
@@ -25,8 +35,9 @@ def segment_text(text):
     segments = re.split(r'\n(?=WHEREAS|Section|Definitions|RECITALS|AMENDED)', text, flags=re.IGNORECASE)
     return [seg.strip() for seg in segments if seg.strip()]
 
-# Extract and segment text from the file
-text = extract_text_from_docx(file_path)
+# Extract and segment text from the files
+print("Processing document...")
+text = extract_text_from_docx(file_paths)
 segments = segment_text(text)
 print(f"Total segments extracted: {len(segments)}")
 
