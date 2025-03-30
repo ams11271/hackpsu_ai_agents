@@ -3,22 +3,23 @@ import re
 from sentence_transformers import SentenceTransformer
 import faiss
 import numpy as np
+import os
 
-# Use your provided file path
-file_paths = [
-    r'/Users/arya/Desktop/finance/data/Model-COI-10-24-2024.docx',
-    r'/Users/arya/Desktop/finance/data/Model-IRA-10-24-2024.docx',
-    r'/Users/arya/Desktop/finance/data/Model-PIPE-Form-of-Common-Warrant-US-Issuer.docx',
-    r'/Users/arya/Desktop/finance/data/Model-PIPE-Form-of-Pre-Funded-Warrant-US-Issuer.docx',
-    r'/Users/arya/Desktop/finance/data/Model-PIPE-Registration-Rights-Agreement-FPI-Final.docx',
-    r'/Users/arya/Desktop/finance/data/Model-PIPE-Registration-Rights-Agreement-US-Issuer-.docx',
-    r'/Users/arya/Desktop/finance/data/Model-SPA-10-24-2024.docx',
-    r'/Users/arya/Desktop/finance/data/Model-VA-10-24-2024.docx',
-    r'/Users/arya/Desktop/finance/data/NVCA_Model_Legal-Opinion.docx',
-    r'/Users/arya/Desktop/finance/data/NVCA-2020-Indemnification-Agreement.docx',
-    r'/Users/arya/Desktop/finance/data/NVCA-INVESTORS-RIGHTS-AGREEMENT-10-2023.docx',
-    r'/Users/arya/Desktop/finance/data/NVCA-OISP-Reps-as-of-1-3-2025.docx'
-]
+def get_docx_files_from_data():
+    """Get all DOCX files from the data folder."""
+    data_dir = os.path.join(os.path.dirname(__file__), 'data')
+    if not os.path.exists(data_dir):
+        raise FileNotFoundError("Data directory not found")
+    
+    docx_files = []
+    for file in os.listdir(data_dir):
+        if file.endswith('.docx'):
+            docx_files.append(os.path.join(data_dir, file))
+    
+    if not docx_files:
+        raise FileNotFoundError("No DOCX files found in the data directory")
+    
+    return docx_files
 
 def extract_text_from_docx(file_paths):
     """Extract text from multiple DOCX files."""
@@ -43,9 +44,10 @@ def segment_text(text):
     return [seg.strip() for seg in segments if seg.strip()]
 
 # Extract and segment text from the files
-print("Processing document...")
-raw_text = extract_text_from_docx(file_paths)
-segments = segment_text(raw_text)
+print("Processing documents from data directory...")
+file_paths = get_docx_files_from_data()
+text = extract_text_from_docx(file_paths)
+segments = segment_text(text)
 print(f"Total segments extracted: {len(segments)}")
 
 # Initialize the embedding model
