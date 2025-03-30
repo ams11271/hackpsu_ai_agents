@@ -11,7 +11,7 @@ from transformers import pipeline
 import textwrap
 
 # Initialize the summarization pipeline using an open-source model (T5-small)
-simplifier = pipeline("summarization", model="t5-large", tokenizer="t5-large")
+simplifier = pipeline("summarization", model="t5-small", tokenizer="t5-small")
 
 def chunk_text(text, max_length=500):
     """Split text into chunks of max_length words."""

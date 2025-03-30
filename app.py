@@ -15,55 +15,20 @@ import numpy as np
 from transformers import pipeline
 from vectorize import retrieve_similar_segments, extract_text_from_docx, segment_text
 
-# Initialize the summarization pipeline
-summarizer = pipeline("summarization", model="t5-large", tokenizer="t5-large")
+# Initialize the summarization pipeline with t5-small
+summarizer = pipeline("summarization", model="t5-small", tokenizer="t5-small")
 
 # --------------------------
 # Step 1: Document Processing
 # --------------------------
 
-def extract_text_from_docx(file_paths):
-    """Extract text from multiple DOCX files."""
-    full_text = []
-    for file_path in file_paths:
-        try:
-            doc = Document(file_path)
-            for para in doc.paragraphs:
-                text = para.text.strip()
-                if text:
-                    full_text.append(text)
-        except Exception as e:
-            print(f"Error processing {file_path}: {str(e)}")
-    return "\n".join(full_text)
-
-def segment_text(text):
-    """Segment text into chunks using common legal document markers."""
-    segments = re.split(r'\n(?=WHEREAS|Section|Definitions|RECITALS|AMENDED)', text, flags=re.IGNORECASE)
-    return [seg.strip() for seg in segments if seg.strip()]
-
-def chunk_text(text, max_length=500):
-    """Split text into smaller chunks that can be processed by the model."""
-    words = text.split()
-    chunks = []
-    current_chunk = []
-    current_length = 0
-    
-    for word in words:
-        current_length += len(word) + 1  # +1 for space
-        if current_length > max_length:
-            chunks.append(' '.join(current_chunk))
-            current_chunk = [word]
-            current_length = len(word)
-        else:
-            current_chunk.append(word)
-    
-    if current_chunk:
-        chunks.append(' '.join(current_chunk))
-    
-    return chunks
+def count_sentences(text):
+    """Count the number of sentences in a text."""
+    sentences = re.split(r'[.!?]+', text)
+    return len([s for s in sentences if s.strip()])
 
 def summarize_text(text):
-    """Generate a concise summary of the text."""
+    """Generate a concise summary of the text using t5-small, limited to 4 sentences."""
     try:
         # If text is short enough, no need to summarize
         if len(text.split()) < 50:
@@ -75,15 +40,46 @@ def summarize_text(text):
         
         for chunk in chunks:
             # Generate a very concise summary for each chunk
-            summary = summarizer(chunk, max_length=50, min_length=20, do_sample=False)[0]['summary_text']
+            summary = summarizer(chunk, 
+                               max_length=80,    # Reduced for more concise summaries
+                               min_length=20,    # Reduced for more concise summaries
+                               do_sample=False,   # Deterministic output
+                               num_beams=4,       # Beam search for better quality
+                               early_stopping=True)[0]['summary_text']
+            
+            # Ensure the summary doesn't exceed 4 sentences
+            sentences = re.split(r'[.!?]+', summary)
+            sentences = [s.strip() for s in sentences if s.strip()]
+            if len(sentences) > 4:
+                summary = '. '.join(sentences[:4]) + '.'
+            
             summaries.append(summary)
         
         # Combine summaries if there are multiple chunks
         final_summary = ' '.join(summaries)
+        
+        # Final check to ensure the combined summary doesn't exceed 4 sentences
+        sentences = re.split(r'[.!?]+', final_summary)
+        sentences = [s.strip() for s in sentences if s.strip()]
+        if len(sentences) > 4:
+            final_summary = '. '.join(sentences[:4]) + '.'
+        
         return final_summary
     except Exception as e:
         print(f"Error in summarization: {str(e)}")
         return text
+
+def generate_report(query, k=3):
+    """Generate a summarized report based on the query."""
+    segments = retrieve_similar_segments(query, k)
+    report_parts = []
+    
+    for i, segment in enumerate(segments, 1):
+        # Generate a concise summary for each segment
+        summary = summarize_text(segment)
+        report_parts.append(f"Clause {i}:\n{summary}")
+    
+    return "\n\n".join(report_parts)
 
 # --------------------------
 # Step 2: Semantic Search
@@ -106,27 +102,6 @@ def initialize_search(segments):
     current_index = faiss.IndexFlatL2(dimension)
     current_index.add(current_embeddings)
 
-def retrieve_similar_segments(query, k=3):
-    """Given a query, retrieve the top k most similar segments."""
-    if not current_segments or current_index is None:
-        raise HTTPException(status_code=400, detail="No documents have been processed yet")
-    
-    query_vec = model.encode([query], convert_to_numpy=True)
-    distances, indices = current_index.search(query_vec, k)
-    results = [current_segments[i] for i in indices[0]]
-    return results
-
-def generate_report(query, k=3):
-    """Generate a summarized report based on the query."""
-    segments = retrieve_similar_segments(query, k)
-    report_parts = []
-    
-    for i, segment in enumerate(segments, 1):
-        # Generate a concise summary for each segment
-        summary = summarize_text(segment)
-        report_parts.append(f"Clause {i}:\n{summary}")
-    
-    return "\n\n".join(report_parts)
 
 # --------------------------
 # Step 3: FastAPI Integration
