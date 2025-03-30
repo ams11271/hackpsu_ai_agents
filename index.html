@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ClauseSense Report Generator</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    label { font-weight: bold; }
+    input, button { padding: 8px; margin: 5px 0; }
+    pre { background: #f4f4f4; border: 1px solid #ccc; padding: 10px; }
+  </style>
+</head>
+<body>
+  <h1>ClauseSense Report Generator</h1>
+  <form id="reportForm">
+    <label for="query">Enter your query:</label><br>
+    <input type="text" id="query" name="query" placeholder="What are the key investor rights?" style="width: 300px;" required><br><br>
+    
+    <label for="k">Number of segments:</label><br>
+    <input type="number" id="k" name="k" value="3" min="1" required><br><br>
+    
+    <button type="submit">Generate Report</button>
+  </form>
+  
+  <h2>Report:</h2>
+  <pre id="reportOutput">Your report will appear here...</pre>
+  
+  <script>
+    document.getElementById('reportForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const query = document.getElementById('query').value;
+      const k = parseInt(document.getElementById('k').value);
+      
+      try {
+        const response = await fetch('http://127.0.0.1:8000/report', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: query, k: k })
+        });
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        document.getElementById('reportOutput').textContent = data.report;
+      } catch (error) {
+        document.getElementById('reportOutput').textContent = "Error: " + error;
+      }
+    });
+  </script>
+</body>
+</html>
