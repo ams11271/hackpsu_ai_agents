@@ -6,18 +6,18 @@ import numpy as np
 
 # Use your provided file path
 file_paths = [
-    r'/Users/arya/Downloads/data/Model-COI-10-24-2024.docx',
-    r'/Users/arya/Downloads/data/Model-IRA-10-24-2024.docx',
-    r'/Users/arya/Downloads/data/Model-PIPE-Form-of-Common-Warrant-US-Issuer.docx',
-    r'/Users/arya/Downloads/data/Model-PIPE-Form-of-Pre-Funded-Warrant-US-Issuer.docx',
-    r'/Users/arya/Downloads/data/Model-PIPE-Registration-Rights-Agreement-FPI-Final.docx',
-    r'/Users/arya/Downloads/data/Model-PIPE-Registration-Rights-Agreement-US-Issuer-.docx',
-    r'/Users/arya/Downloads/data/Model-SPA-10-24-2024.docx',
-    r'/Users/arya/Downloads/data/Model-VA-10-24-2024.docx',
-    r'/Users/arya/Downloads/data/NVCA_Model_Legal-Opinion.docx',
-    r'/Users/arya/Downloads/data/NVCA-2020-Indemnification-Agreement.docx',
-    r'/Users/arya/Downloads/data/NVCA-INVESTORS-RIGHTS-AGREEMENT-10-2023.docx',
-    r'/Users/arya/Downloads/data/NVCA-OISP-Reps-as-of-1-3-2025.docx'
+    r'/Users/arya/Desktop/finance/data/Model-COI-10-24-2024.docx',
+    r'/Users/arya/Desktop/finance/data/Model-IRA-10-24-2024.docx',
+    r'/Users/arya/Desktop/finance/data/Model-PIPE-Form-of-Common-Warrant-US-Issuer.docx',
+    r'/Users/arya/Desktop/finance/data/Model-PIPE-Form-of-Pre-Funded-Warrant-US-Issuer.docx',
+    r'/Users/arya/Desktop/finance/data/Model-PIPE-Registration-Rights-Agreement-FPI-Final.docx',
+    r'/Users/arya/Desktop/finance/data/Model-PIPE-Registration-Rights-Agreement-US-Issuer-.docx',
+    r'/Users/arya/Desktop/finance/data/Model-SPA-10-24-2024.docx',
+    r'/Users/arya/Desktop/finance/data/Model-VA-10-24-2024.docx',
+    r'/Users/arya/Desktop/finance/data/NVCA_Model_Legal-Opinion.docx',
+    r'/Users/arya/Desktop/finance/data/NVCA-2020-Indemnification-Agreement.docx',
+    r'/Users/arya/Desktop/finance/data/NVCA-INVESTORS-RIGHTS-AGREEMENT-10-2023.docx',
+    r'/Users/arya/Desktop/finance/data/NVCA-OISP-Reps-as-of-1-3-2025.docx'
 ]
 
 def extract_text_from_docx(file_paths):
