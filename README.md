@@ -1,3 +1,3 @@
-# Hack PSU
+# Hack PSU - ClauseSense
 
-ClauseSense
+Contract generation model for legal document analysis and summarization.
