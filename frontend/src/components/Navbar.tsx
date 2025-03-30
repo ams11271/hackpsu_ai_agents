@@ -33,6 +33,9 @@ const Navbar = () => {
           <Button color="inherit" component={RouterLink} to="/clauses">
             Clauses
           </Button>
+          <Button color="inherit" component={RouterLink} to="/chatbot">
+            AI Chatbot
+          </Button>
         </Toolbar>
       </AppBar>
     </Box>

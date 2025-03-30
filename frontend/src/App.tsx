@@ -12,6 +12,7 @@ import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import AgreementGenerator from './pages/AgreementGenerator';
 import ClauseManager from './pages/ClauseManager';
+import ChatLicenseGenerator from './pages/ChatLicenseGenerator';
 
 const theme = createTheme({
   palette: {
@@ -37,6 +38,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/generator" element={<AgreementGenerator />} />
             <Route path="/clauses" element={<ClauseManager />} />
+            <Route path="/chatbot" element={<ChatLicenseGenerator />} />
           </Routes>
         </Container>
       </Router>
